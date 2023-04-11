@@ -15,10 +15,14 @@ static class Asteroids
         
         float SpawnTimer = 0.0f;
         List<GameObject> Asteroids = new List<GameObject>();
+        
+        float ShootTimer = 0.0f;
+        List<GameObject> Bullets = new List<GameObject>();
 
         while (!WindowShouldClose())
         {
             SpawnTimer += GetFrameTime();
+            ShootTimer += GetFrameTime();
             if (SpawnTimer >= 3.0f)
             {
                 GameObject asteroid = new GameObject(new Vector2(GetRandomValue(0, GetScreenWidth()), GetRandomValue(0, GetScreenHeight())),
@@ -27,8 +31,6 @@ static class Asteroids
                 Asteroids.Add(asteroid);
                 SpawnTimer = 0.0f;
             }
-            
-            
 
             if (IsKeyDown(KEY_W)) player.Velocity += player.Forward * player.Accelaration * GetFrameTime();
             if (IsKeyDown(KEY_S)) player.Velocity -= player.Forward * player.Accelaration * GetFrameTime();
@@ -36,10 +38,19 @@ static class Asteroids
             {
                 player.RotateByDegrees(-100 * GetFrameTime());
             }
-
             if (IsKeyDown(KEY_D))
             {
                 player.RotateByDegrees(100 * GetFrameTime());
+            }
+            if (IsKeyDown(KEY_SPACE))
+            {
+                if (ShootTimer >= 0.5f)
+                {
+                    GameObject bullet = new GameObject(player.Position, 10.0f);
+                    bullet.Velocity = player.Forward * 100;
+                    Bullets.Add(bullet);
+                    ShootTimer = 0.0f;
+                }
             }
             player.Velocity = Vector2.Clamp(player.Velocity, new Vector2(-10, -10), new Vector2(10, 10));
             player.Position += player.Velocity * player.Accelaration * GetFrameTime();
@@ -56,6 +67,11 @@ static class Asteroids
                 foreach (var asteroid in Asteroids)
                 {
                     DrawCircleV(asteroid.Position, 20.0f, Color.GRAY);
+                }
+                foreach (var bullet in Bullets)
+                {
+                    bullet.Position += bullet.Velocity * bullet.Accelaration * GetFrameTime();
+                    DrawCircleV(bullet.Position, 5.0f, Color.YELLOW);
                 }
                 DrawCircleV(player.Position, 2.0f, Color.BLUE);
                 DrawText(player.Forward.ToString(), 100, 100, 15, Color.GRAY);
