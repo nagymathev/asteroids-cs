@@ -62,6 +62,24 @@ static class Asteroids
                 asteroid.Position += asteroid.Velocity * asteroid.Accelaration * GetFrameTime();
             }
 
+            var A = Asteroids;
+            var B = Bullets;
+            foreach (var asteroid in A)
+            {
+                foreach (var bullet in B)
+                {
+                    if (CheckCollisionCircles(asteroid.Position, 20.0f, bullet.Position, 5.0f))
+                    {
+                        A.Remove(asteroid);
+                        B.Remove(bullet);
+                        break;
+                    }
+                }
+                break;
+            }
+            Asteroids = A;
+            Bullets = B;
+
             BeginDrawing();
                 ClearBackground(Color.BLACK);
                 foreach (var asteroid in Asteroids)
