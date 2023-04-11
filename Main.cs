@@ -12,9 +12,22 @@ static class Asteroids
         InitWindow(800, 480, "Asteroids");
 
         GameObject player = new GameObject(new Vector2(GetScreenWidth() / 2, GetScreenHeight() / 2), 10.0f);
+        
+        float SpawnTimer = 0.0f;
+        List<GameObject> Asteroids = new List<GameObject>();
 
         while (!WindowShouldClose())
         {
+            SpawnTimer += GetFrameTime();
+            if (SpawnTimer >= 3.0f)
+            {
+                GameObject asteroid = new GameObject(new Vector2(GetRandomValue(0, GetScreenWidth()), GetRandomValue(0, GetScreenHeight())),
+                    10.0f);
+                asteroid.Velocity = new Vector2(GetRandomValue(-10, 10), GetRandomValue(-10, 10));
+                Asteroids.Add(asteroid);
+                SpawnTimer = 0.0f;
+            }
+            
             
 
             if (IsKeyDown(KEY_W)) player.Velocity += player.Forward * player.Accelaration * GetFrameTime();
@@ -33,8 +46,17 @@ static class Asteroids
             Vector2[] points = CreateTrianglePoints(player.Position, 50.0f);
             points = points.RotatePointsAroundPoint(player.Position, player.Angle);
 
+            foreach (var asteroid in Asteroids)
+            {
+                asteroid.Position += asteroid.Velocity * asteroid.Accelaration * GetFrameTime();
+            }
+
             BeginDrawing();
                 ClearBackground(Color.BLACK);
+                foreach (var asteroid in Asteroids)
+                {
+                    DrawCircleV(asteroid.Position, 20.0f, Color.GRAY);
+                }
                 DrawCircleV(player.Position, 2.0f, Color.BLUE);
                 DrawText(player.Forward.ToString(), 100, 100, 15, Color.GRAY);
                 DrawLineV(player.Position, player.Position + player.Forward * 25, Color.RED);
