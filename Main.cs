@@ -12,6 +12,7 @@ static class Asteroids
         InitWindow(800, 480, "Asteroids");
 
         GameObject player = new GameObject(new Vector2(GetScreenWidth() / 2, GetScreenHeight() / 2), 10.0f);
+        int score = 0;
         
         float SpawnTimer = 0.0f;
         List<GameObject> Asteroids = new List<GameObject>();
@@ -72,6 +73,7 @@ static class Asteroids
                     {
                         A.Remove(asteroid);
                         B.Remove(bullet);
+                        score += 100;
                         break;
                     }
                 }
@@ -100,6 +102,7 @@ static class Asteroids
                 );
                 DrawText(player.Velocity.Length().ToString() + "m/s", 200, 25, 13, Color.VIOLET);
                 DrawText(player.Angle.ToString() + "deg", 200, 50, 13, Color.VIOLET);
+                DrawText(score.ToString(), GetScreenWidth() / 2, 50, 52, Color.VIOLET);
             EndDrawing();
         }
         CloseWindow();
